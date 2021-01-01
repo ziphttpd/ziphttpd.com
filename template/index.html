@@ -1,0 +1,242 @@
+{{define "index" }}
+<!DOCTYPE html>
+<html>
+
+<head>
+	<meta charset="utf-8">
+	<meta name="description" content="ZipHttpd.com の公式サイトです。">
+	<meta name="viewport" content="width=device-width,initial-scale=1">
+	<meta property="og:title" content="ZipHttpd" />
+	<meta property="og:type" content="WEB" />
+	<meta property="og:url" content="https://ziphttpd.com" />
+	<meta property="og:site_name" content="ZipHttpd.com" />
+	<meta property="og:description" content="ZipHttpd.com Official" />
+	<title>StringNote</title>
+	<link rel="icon" href="./static/favicon.ico">
+	<link type="text/css" rel="stylesheet" href="./static/sign.css" />
+
+	<script src="./static/CompElem.js"></script>
+</head>
+
+
+<!-- ----------------------------------------------------------------------------------------------------
+  ■ 簡易多言語化
+ ---------------------------------------------------------------------------------------------------- -->
+<script>
+	function easyi18n(trans) {
+		let tr = trans[navigator.language];
+		// override
+		const transjson = localStorage.getItem("stringnote.transration." + navigator.language);
+		if (transjson) {
+			const transObj = JSON.parse(transjson);
+			if (transObj) {
+				if (tr) {
+					Object.keys(tr).forEach(key => {
+						if (!transObj[key]) {
+							transObj[key] = tr[key];
+						}
+					});
+				}
+				tr = transObj;
+			}
+		}
+		// translation
+		if (tr) {
+			Object.keys(tr).forEach(key => {
+				const ids = key.split('.');
+				elem = document.getElementById(ids[0]);
+				if (elem) {
+					const text = tr[key];
+					if (ids.length>1) {
+						elem.setAttribute(ids[1], text);
+					} else {
+						elem.innerHTML = text;
+					}
+				}
+			});
+		}
+	};
+	function transInit() {
+		return {
+			ja: {
+				"title": "ZipHttpd へようこそ"
+				, "description": "ZipHttpd ドキュメントサイトを公開できるサービスです。"
+				, "download": "クライアントダウンロード"
+				, "link-ad": "表示される広告の一覧"
+				, "text-official-announcement": "公式アナウンス"
+				, "text-total": "アクセス数:"
+				, "sourcecode": "ソースコード(GitHub)"
+				, "privacy": "プライバシーポリシー"
+			}
+		};
+	};
+</script>
+
+
+<!-- ----------------------------------------------------------------------------------------------------
+  ■ ダウンアイコン
+	<icon-down color="blue" popup="ポップアップ"></icon-down>
+ ---------------------------------------------------------------------------------------------------- -->
+<template id="icon-down">
+	<style>
+		.wrapper {
+			position: relative;
+		}
+		.popup {
+			font-size: 0.8rem;
+			width: 200px;
+			border: 1px solid black;
+			padding: 10px;
+			background: white;
+			border-radius: 10px;
+			transition: 0.6s all;
+			position: absolute;
+			bottom: 3em;
+			left: 10px;
+			z-index: 3;
+
+			display: none;;
+		}
+		.icon:hover {
+			cursor: pointer;
+		}
+		.icon:hover + .popup {
+			display: inline-block;
+		}
+	</style>
+	<span class="wrapper">
+		<svg class="icon" width="16px" height="16px" viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg">
+			<line x1="5" y1="5" x2="95" y2="5" stroke-width="10" stroke="white" stroke-linecap="round"/>
+			<polygon points="5,20 95,20 60,95 40,95" fill="white" stroke-linejoin="round"/>
+		</svg>
+		<span class="popup"></span>
+	</span>
+</template>
+<script>
+CompElem.Define("icon-down"
+	, class IconDown extends CompElem {
+		// 監視属性リスト
+		static _attributes = ["size", "color"];
+		// コンテンツ更新ハンドル
+		_updateContents() {
+			const that = this.shadowRoot;
+			// サイズ
+			const size = this.getAttribute("size");
+			if (size) {
+				const svg = that.querySelector("svg");
+				svg.setAttribute("width", size);
+				svg.setAttribute("height", size);
+			}
+			// 色
+			const color = this.getAttribute("color");
+			if (color) {
+				const polygon = that.querySelector("polygon");
+				polygon.setAttribute("fill", color);
+				const line = that.querySelectorAll("line");
+				line.forEach(function(elem) {
+					elem.setAttribute("stroke", color);
+				});
+			}
+			// ポップアップテキスト
+			that.querySelector(".popup").textContent = this.textContent;
+		}
+	}
+);
+</script>
+
+
+<!-- ----------------------------------------------------------------------------------------------------
+  ■ ポップアップスパン
+	<popup-span popup="ポップアップ">文字列</popup-span>
+ ---------------------------------------------------------------------------------------------------- -->
+<template id="popup-span">
+	<style>
+		.wrapper {
+			position: relative;
+		}
+		.popup {
+			font-size: 0.8rem;
+			width: 200px;
+			border: 1px solid black;
+			padding: 10px;
+			background: white;
+			border-radius: 10px;
+			transition: 0.6s all;
+			position: absolute;
+			bottom: 3em;
+			left: 10px;
+			z-index: 3;
+
+			display: none;;
+		}
+		.content:hover + .popup {
+			display: inline-block;
+		}
+	</style>
+	<span class="wrapper">
+		<span class="content"></span>
+		<span class="popup"></span>
+	</span>
+</template>
+<script>
+CompElem.Define("popup-span"
+	, class IconDown extends CompElem {
+		// 監視属性リスト
+		static _attributes = ["popup"];
+		// コンテンツ更新ハンドル
+		_updateContents() {
+			const that = this.shadowRoot;
+			// ポップアップテキスト
+			const popup = this.getAttribute("popup");
+			if (popup) {
+				that.querySelector(".popup").textContent = popup;
+			}
+			// 表示文字列
+			that.querySelector(".content").innerHTML = this.innerHTML;
+		}
+	}
+);
+</script>
+
+
+<!-- ----------------------------------------------------------------------------------------------------
+  ■ HTML
+ ---------------------------------------------------------------------------------------------------- -->
+<body>
+	<div id="header">
+		<h1 id="title">Welcome to ZipHttpd.</h1>
+	</div>
+	<div id="description" class="description">
+		ZipHttpd A service that allows you to publish a document download site.
+	</div>
+
+	<a href="{{.URL}}" class="btn btn--orange"><span id="client download">download</span><br>{{.Version}}</a>
+
+	<div class="ad">
+		{{range .Ad.Ad728}}
+		<iframe src="{{.URL}}" loading="lazy" width="728" height="90" scrolling="no" border="0" marginwidth="0" style="border:none;"
+			frameborder="0"></iframe>
+		{{end}}
+		<br />
+		{{range .Ad.Ad125}}
+		<iframe src="{{.URL}}" loading="lazy" width="125" height="125" scrolling="no" border="0" marginwidth="0" style="border:none;"
+			frameborder="0"></iframe>
+		{{end}}
+		<br /><a id="link-ad" href="/ad">All Advertisings.</a>
+	</div>
+
+	<div id="info">
+		<span id="text-total">total access:</span> <span id="access">{{.Acc}}</span><br />
+	</div>
+
+	<p>
+		Copyright (C) 2020- ZipHttpd.com [<a href="mailto:ziphttpd@xorver.com" target="mail">mail</a>]
+	</p>
+</body>
+
+<script>
+	easyi18n(transInit());
+</script>
+
+</html>
+{{end}}

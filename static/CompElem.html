@@ -1,0 +1,773 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+	<meta charset="utf-8">
+	<title>CompElem.js sample</title>
+	<!--script src="./js/CompElem.js"></script-->
+	<script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/10.2.0/highlight.min.js"></script>
+<style>
+H1 {
+	width: 60%;
+	font-size: 150%;
+	font-weight: bold;
+	text-align: center;
+	border-width: 2px 30px 2px 30px;
+	border-style: solid;
+	border-radius: 3px 3px 3px 3px;
+	border-color: lightskyblue;
+	background-color: aqua;
+	color: #000000;
+	padding: 16px 0px 16px 15px;
+	clear: both;
+}
+H2 {
+	width: 480px;
+	font-size: 130%;
+	font-weight: bold;
+	border-width: 1px 0px 0px 20px;
+	border-style: solid;
+	border-radius: 10px 0px 10px 0px;
+	border-color: #006666;
+	background-color: #eeeecc;
+	color: #000066;
+	padding: 2px 0px 2px 10px;
+	clear: both;
+	margin-left: 1em;
+}
+H3 {
+	width: 400px;
+	font-size: 120%;
+	font-weight: normal;
+	border-width: 4px 0px 0px 0px;
+	border-style: double;
+	border-color: #006666;
+	background-color: #eeeeee;
+	color: #000066;
+	padding: 2px 0px 2px 10px;
+	clear: both;
+	margin-left: 2em;
+}
+p {
+	margin-left: 3em;
+}
+</style>
+
+</head>
+
+<body>
+	<h1>CompElem.js sample.</h1>
+	<p>
+	2020/09/30 copyright by <icon-logo scale="0.3"></icon-logo> XORveR.com, strnote.com<br>
+	Licence: MIT
+	</p>
+
+	<h2>ソースコード</h2>
+	<p>
+	<a href="https://strnote.com/static/CompElem.js">参照URL</a> (used in <a href="https://strnote.com/">StringNote</a>)<br>
+	<expand-div style="color: blue;" title="CompElem.js のソースコード ▼">
+		<block-viewer title="CompElem.js" block="CompElem.js"></block-viewer>
+	</expand-div>
+	</p>
+
+	<h2>概要</h2>
+	<p>CompElem.js は WEB Components によるカスタムタグを簡易に実装するためのユーティリティです。</p>
+	<p>Vue.js や React.js のような高度な機能は提供しません。<span style="font-size: xx-small; color:lightgray;">というよりrender()の挙動に疲れて作りました。</span><br>
+	CompElem.js は WEB Components によるカスタムタグを簡易に実装するため<span style="font-weight: bold;">だけ</span>のユーティリティです。</p>
+	<html-dialog class="dialog-1" yes="はい" no="いいえ" title="タイトル１" message="ダイアログ１"></html-dialog>
+	<html-dialog class="dialog-2" yes="はい" no="いいえ" title="タイトル２" message="ダイアログ２"></html-dialog>
+	<div style="margin: 1em; width: 100px; text-align: center; padding: 10px; border: 1px solid black; margin-left: 100px;">
+	<span>実行例</span>
+	<popup-span popup="click button"><input type="button" value="show dialog" onclick="push();"/></popup-span>
+	</div>
+
+
+	<h2>使い方</h2>
+	<p>
+	事例として、MDN のサンプルを改造してみます。<br>
+	申し訳ありませんが HTML と JavaScript について、ある程度の知識があるものとして説明させていただきます。<br>
+	</p>
+	<p>このカスタム要素はカーソルが当たったときに<popup-span popup="こういう文字枠です" style="color: blue;">バルーン</popup-span>を表示するようにspan要素を拡張したものです。</p>
+
+	<block-viewer title="<popup-span>" block="block-popup-span"></block-viewer>
+
+	<h3>属性</h3>
+	<p>
+	カスタム要素では属性で挙動を指定します。<br>
+	例えば <code>&lt;popup-span popup="こういう文字枠です"&gt;</code> では <code>popup=""</code> でバルーンで表示するテキストを指定しています。<br>
+	このように属性を使いたい場合、<code>static _attributes = ["popup"];</code> とクラスの _attributes 配列プロパティに属性名を定義します。<br>
+	属性名を定義すると、それらの属性が設定変更されたときに _updateContents() が呼び出されます。<br>
+	設定変更された属性値は <code>const popup = this.getAttribute("popup");</code> と取得できますので、これを使って内部要素に反映します。<br>
+	</p>
+
+	<h3>内部要素</h3>
+	<p>
+	WEB Components の基本的な事項として、カスタム要素は Shadow DOM という機構に格納されています。<br>
+	Shadow DOM は <code>const that = this.shadowRoot;</code> と取得します。<br>
+	内部要素はこれを用いて、<code>that.querySelector(".popup").textContent = popup;</code> と特定し、反映します。<br>
+	</p>
+
+	<h3>テキスト</h3>
+	<p>
+	また、<code>&lt;popup-span&gt;テキスト&lt;/popup-span&gt;</code> のテキスト（正式にはDOMツリー）が更新されたときにも呼ばれます。<br>
+	更に端的に説明すると、<code>this.innerHTML</code> が変更されたことを意味します。<br>
+	<code>that.querySelector(".content").innerHTML = this.innerHTML;</code> と、slot の簡易的な代替としても使用できます。<br>
+	※ slot が使えないわけではありません。
+	</p>
+
+	<h3>カスタムタグ名</h3>
+	<p>
+	CompElem.Define() ではテンプレートの id (<code>id="popup-span"</code>)を、第一引数(<code>"popup-span"</code>)で指定します。<br>
+	これはテンプレートのIDをカスタムタグ名として流用することで、指定を省くためです。<br>
+	カスタムタグ名もテンプレートもともにユニークですから問題はないとの判断です。<br>
+	</p>
+
+	<h3>注意</h3>
+	<p>
+	_updateContents() には属性やテキストを反映させるコードを記述しますが、ちょっとした注意点があります。<br>
+	HTML として属性を記述していても、それが設定される前にも呼ばれることです。<br>
+	ですので、属性が定義されていないケース、getAttribute() が空を返してくるケースは想定してください。<br>
+	</p>
+
+	<h2>特殊な応用</h2>
+
+	<p>
+	この項では基本的とは言えない応用について述べます。<br>
+	</p>
+
+	<h3>SVG</h3>
+	<p>
+	SVG画像とは、テキストで表現される図形です。<br>
+	通常は外部ファイルとして用意しておいて、 <code>&lt;img&gt;</code> タグで呼び出して使用します。<br>
+	しかし、この SVG 画像をテンプレート化しカスタム要素とすることでイメージとしての利用が捗ります。<br>
+	たとえば<code>&lt;icon-down&gt;&lt;/icon-down&gt;</code>と書くことで<icon-down></icon-down>が表示できます。<br>
+	</p><p>
+	しかし個々のアイコンで埋め込み SVG を書く必要が無いだけならば、あまりメリットは感じられないかもしれません。<br>
+	SVG のカスタム要素としての真価は、<icon-down size="32px" color="green"></icon-down><icon-down size="10px" color="red"></icon-down>というような自由なアレンジを可能とする点です。<br>
+	属性で指定したパラメータをもとにアレンジできる点で画像ファイルでは難しい表現が可能です。<br>
+	</p>
+
+	<block-viewer title="<icon-down>" block="block-icon-down"></block-viewer>
+
+	<h3>動的生成</h3>
+	<p>
+	普通はテンプレートを記述すれば事は済みますが、動的に要素を生成したい場合もあるかと思います。<br>
+	例えばテーブル行をコンポーネント化して任意個の<code>&lt;td&gt;</code>を動的生成したいような場合などです。<br>
+	<span style="color: red;">※ もっとも、<code>&lt;td&gt;</code>はコンポーネント化するとテーブル要素としてはレンダリングされませんので flex を使う必要があります。</span><br>
+	テンプレートを使わず、動的な要素生成を実現したい場合のため、_style プロパティや _contents プロパティを拡張点として用意してあります。
+	</p>
+
+	<hr>
+	<p>copyright by <icon-logo scale="0.3"></icon-logo> XORveR.com, strnote.com 2020</p>
+</body>
+
+<script>
+function push() {
+	const dialog1 = document.querySelector(".dialog-1");
+	const dialog2 = document.querySelector(".dialog-2");
+	dialog1.dialogShow()
+		.then(target => {
+			console.log(target);
+			if (target.result) {
+				dialog2.dialogShow()
+					.then(target => {
+						console.log(target);
+					}).catch(function (error) {
+						console.log(error);
+					});
+			}
+		}).catch(function (error) {
+			console.log(error);
+		});
+}
+</script>
+
+<block id="CompElem.js">
+<!-- ----------------------------------------------------------------------------------------------------
+  ■ CompElem.js 埋め込み版
+ ---------------------------------------------------------------------------------------------------- -->
+<script>
+/**
+ * 簡易コンポーネント作成ユーティリティ
+ * @licence MIT
+ * @copyright xorver.com
+ * @since 2020/09/30
+ */
+class CompElem extends HTMLElement {
+	// 表示更新メソッド
+	update() {
+		// スタイル定義の変更時の適用
+		let style = this._style;
+		if (style && this.styleElem.textContent!=style) {
+			this.styleElem.textContent = style;
+		}
+		// コンテンツ更新ハンドルの実行
+		if (this._updateContents) {
+			this._updateContents();
+		}
+	}
+	// 基底コンストラクタ
+	constructor() {
+		super();
+		const shadow = this.attachShadow({mode: 'open'});
+		// コンテンツ生成
+		const template = document.getElementById(this.constructor.tagName);
+		if (template) {
+			// テンプレートから生成
+			shadow.appendChild(template.content.cloneNode(true));
+		} else {
+			// エレメント生成
+			shadow.appendChild(this._contents);
+		}
+		// Style 生成
+		if (!shadow.querySelector('style')) {
+			shadow.appendChild(document.createElement('style'));
+		}
+		this.styleElem = shadow.querySelector('style');
+		// 初回更新
+		this.update();
+		// DOM 要素更新監視オブザーバ接続
+		this._observConnect();
+	}
+	// DOM 接続イベント
+	connectedCallback() {
+		// DOM 要素更新監視オブザーバ接続
+		this._observConnect();
+	}
+	// DOM 切断イベント
+	disconnectedCallback() {
+		// DOM 要素更新監視オブザーバ解放
+		this._observDisconnect();
+	}
+
+	// 監視属性リストをマージして返す
+	static get observedAttributes() {
+		// クラスの _attributes を取得
+		let attr = this._attributes;
+		if (!attr) attr = [];
+		// スーパークラスの observedAttributes をマージ
+		const proto = Object.getPrototypeOf(this).observedAttributes;
+		return attr.concat(proto);
+	}
+	// 監視属性更新イベントハンドル
+	attributeChangedCallback(name, oldValue, newValue) {
+		this.update();
+	}
+
+	// DOM 要素更新監視オブザーバ接続
+	_observConnect() {
+		if (!this._observer) {
+			this._observer = new MutationObserver(this._observed.bind(this));
+			this._observer.observe(this, {childList: true});
+		}
+	}
+	// DOM 要素更新監視オブザーバ解放
+	_observDisconnect() {
+		if (this._observer) {
+			this._observer.takeRecords();
+			this._observer.disconnect();
+			delete this._observer;
+		}
+	}
+	// DOM 要素更新イベント
+	_observed(mutations) {
+		if (mutations.length>0) {
+			const mu = mutations[0];
+			if (mu.addedNodes.length>0) {
+				const node = mu.addedNodes[0];
+				const target = mu.target;
+				// 監視属性更新イベントハンドル
+				this.attributeChangedCallback(node.nodeName, target.textContent, node.textContent);
+			}
+		}
+	}
+
+	// コンポーネント登録
+	static Define(tagName, cls) {
+		// Class.tagName でタグ名を登録
+		// 関連付けの簡略化のため、テンプレートのIDと共用させる
+		//     → <template id="component-name">...</template>
+		cls.tagName = tagName;
+		customElements.define(tagName, cls);
+	};
+
+/** サブクラスで定義する項目
+
+	// スタイル定義
+	get _style() { return `...`; }
+	// コンテンツ定義 (tagName と同じIDのテンプレートが無い場合にElementを生成して返す)
+	get _contents() {
+		return MakeElement({
+			tag: 'span', props:{textContent:""}
+			, child:{
+				tag: 'span', ...
+			}
+		});
+	}
+	// コンテンツ更新ハンドル
+	_updateContents() {}
+
+	// 監視属性リスト (<tag 属性="xxxx">)
+	static _attributes = [];
+
+	// ドキュメント移動イベント
+	adoptedCallback() {}
+*/
+};
+
+// --------------------------------------------------------------------------------
+// 独自表現のオブジェクトからコンテンツのエレメントを動的に作成するユーティリティ
+// --------------------------------------------------------------------------------
+function MakeElement(contents) {
+	if (!contents) {
+		const mes = "contents was undefined.";
+		console.log(mes);
+		contents = {
+			tag:"span"
+			, style:"color:red; font-size:xx-large;"
+			, props:{textContent: mes}
+		};
+	}
+	// エレメント生成
+	let elem = document.createElement(contents.tag);
+	// 属性(srcなど)の設定
+	Object.keys(contents).forEach((name) => {
+		if (name!='tag' && name!='props' && name!='child') {
+			elem.setAttribute(name, contents[name]);
+		}
+	});
+	if (contents.props) {
+		// プロパティ(elem.textContentなど)の設定
+		Object.keys(contents.props).forEach((name) => {
+			elem[name] = contents.props[name];
+		});
+	}
+	if (contents.child) {
+		// 子要素の埋め込み
+		if (Array.isArray(contents.child)) {
+			contents.child.forEach((child) => { elem.appendChild(MakeElement(child)); });
+		} else {
+			elem.appendChild(MakeElement(contents.child));
+		}
+	}
+	return elem;
+};
+</script>
+</block>
+
+<block id="block-html-dialog">
+<!-- ----------------------------------------------------------------------------------------------------
+  ■ ダイアログ
+	<html-dialog class="dialog-1" yes="はい" no="いいえ" title="タイトル１" message="ダイアログ１"></html-dialog>
+ ---------------------------------------------------------------------------------------------------- -->
+<template id="html-dialog">
+	<style>
+	.dialog {
+		display:none;
+	}
+	.background {
+		position: absolute;
+		left: 0px;
+		top: 0px;
+		width: 100%;
+		height: 100%;
+		background-color: #000000;
+		opacity: 0.6;
+		z-index: 9;
+	}
+	.window {
+		position: absolute;
+		left: 50%;
+		top: 50%;
+		width: 300px;
+/*		height: 200px;*/
+		margin-left: -150px;
+		margin-top: -100px;
+		background-color: #dddddd;
+		text-align: center;
+		border: solid 1px;
+		border-radius: 10px;
+		z-index: 10;
+	}
+	.title {
+		border-radius: 10px 10px 0px 0px;
+		background: black;
+		color: white;
+	}
+	.content {
+		text-align: left;
+		padding: 0em 3em 0px 3em;
+		border-radius: 0px 0px 10px 10px;
+		border-style: solid;
+		padding: 10px;
+	}
+	.buttons {
+		text-align: right;
+	}
+	</style>
+	<div class="dialog">
+		<div class="background"></div>
+		<div class="window">
+			<div class="title"></div>
+			<div class="content">
+				<div class="message"></div>
+				<div class="buttons">
+					<input class="yes" type="button" value="yes"/>
+					<input class="no" type="button" value="no"/>
+				</div>
+			</div>
+		</div>
+	</div>
+</template>
+<script>
+CompElem.Define("html-dialog"
+	, class extends CompElem {
+		static _attributes = ["yes", "no", "message"];
+		_updateContents() {
+			const that = this.shadowRoot;
+			that.querySelector(".yes").value = this.getAttribute("yes");
+			that.querySelector(".no").value = this.getAttribute("no");
+			that.querySelector(".message").innerHTML = this.getAttribute("message");
+			that.querySelector(".title").textContent = this.getAttribute("title");
+		}
+		constructor() {
+			super();
+			const that = this.shadowRoot;
+			that.querySelector(".yes").onclick = this.func.bind(this);
+			that.querySelector(".no").onclick = this.dialogHide.bind(this);
+			this.result = false;
+			this.defer = () => {};
+		}
+		func() {
+			this.result = true;
+			this.dialogHide();
+		}
+		dialogHide() {
+			const that = this.shadowRoot;
+			const dialog = that.querySelector(".dialog");
+			dialog.style.display = "none";
+			this.defer();
+			this.defer = () => {};
+		}
+		dialogShow() {
+			this.result = false;
+			const that = this.shadowRoot;
+			const dialog = that.querySelector(".dialog");
+			dialog.style.display = "block";
+			const target = this;
+			return new Promise(function (callback, onerror) {
+				target.defer = function() {
+					callback(target);
+				}
+			});
+		}
+	}
+);
+</script>
+</block>
+
+<block id="block-popup-span">
+<!-- ----------------------------------------------------------------------------------------------------
+  ■ ポップアップスパン
+	<popup-span popup="ポップアップ">文字列</popup-span>
+ ---------------------------------------------------------------------------------------------------- -->
+<template id="popup-span">
+	<style>
+		.wrapper {
+			position: relative;
+		}
+		.popup {
+			font-size: 0.8rem;
+			width: 200px;
+			border: 1px solid black;
+			padding: 10px;
+			background: white;
+			border-radius: 10px;
+			transition: 0.6s all;
+			position: absolute;
+			bottom: 3em;
+			left: 10px;
+			z-index: 3;
+
+			display: none;;
+		}
+		.content:hover + .popup {
+			display: inline-block;
+		}
+	</style>
+	<span class="wrapper">
+		<span class="content"></span>
+		<span class="popup"></span>
+	</span>
+</template>
+<script>
+CompElem.Define("popup-span"
+	, class extends CompElem {
+		// 監視属性リスト
+		static _attributes = ["popup"];
+		// コンテンツ更新ハンドル
+		_updateContents() {
+			const that = this.shadowRoot;
+			// ポップアップテキスト
+			const popup = this.getAttribute("popup");
+			if (popup) {
+				that.querySelector(".popup").textContent = popup;
+			}
+			// 表示文字列
+			that.querySelector(".content").innerHTML = this.innerHTML;
+		}
+	}
+);
+</script>
+</block>
+
+<block id="block-icon-down">
+<!-- ----------------------------------------------------------------------------------------------------
+	■ ダウンアイコン
+	<icon-down></icon-down>
+ ---------------------------------------------------------------------------------------------------- -->
+<template id="icon-down">
+	<span class="wrapper">
+		<svg class="icon" width="16px" height="16px" viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg">
+			<line x1="5" y1="5" x2="95" y2="5" stroke-width="10" stroke="blue" stroke-linecap="round"/>
+			<polygon points="5,20 95,20 60,95 40,95" fill="blue" stroke-linejoin="round"/>
+		</svg>
+	</span>
+</template>
+<script>
+CompElem.Define("icon-down"
+	, class IconDown extends CompElem {
+		// 監視属性リスト
+		static _attributes = ["size", "color"];
+		// コンテンツ更新ハンドル
+		_updateContents() {
+			const that = this.shadowRoot;
+			// サイズ
+			const size = this.getAttribute("size");
+			if (size) {
+				const svg = that.querySelector("svg");
+				svg.setAttribute("width", size);
+				svg.setAttribute("height", size);
+			}
+			// 色
+			const color = this.getAttribute("color");
+			if (color) {
+				const polygon = that.querySelector("polygon");
+				polygon.setAttribute("fill", color);
+				const line = that.querySelectorAll("line");
+				line.forEach(function(elem) {
+					elem.setAttribute("stroke", color);
+				});
+			}
+		}
+	}
+);
+</script>
+</block>
+
+
+<block id="block-block-viewer">
+<!-- ----------------------------------------------------------------------------------------------------
+  ■ ブロックビュアー
+	<block-viewer title="タイトル" block="block id"></block-viewer>
+ ---------------------------------------------------------------------------------------------------- -->
+<template id="block-viewer">
+	<style>
+		.wrapper {
+			position: relative;
+			width: 70%;
+			margin-left: 100px;
+			border-radius: 10px;
+			border-style: solid;
+			text-align: center;
+			background-color: black;
+			color: black;
+		}
+		.title {
+			color: white;
+			font-weight: bold;
+		}
+		pre {
+			text-align: left;
+			border-radius: 0px 0px 10px 10px;
+			border-style: solid;
+			margin: 0px;
+		}
+	</style>
+	<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/10.2.0/styles/default.min.css">
+	<div class="wrapper"><span class="title"></span><pre><code></code></pre></div>
+</template>
+<script>
+CompElem.Define("block-viewer"
+	, class extends CompElem {
+		// 監視属性リスト
+		static _attributes = ["title", "block", "code"];
+		// コンテンツ更新ハンドル
+		_updateContents() {
+			const that = this.shadowRoot;
+			// タイトル文字列
+			const title = this.getAttribute("title");
+			that.querySelector("span").textContent = title;
+			// 対象ブロック
+			const block = this.getAttribute("block");
+			if (block) {
+				const elem = document.getElementById(block);
+				if (elem) {
+					const html = elem.innerHTML;
+					that.querySelector("code").textContent = html.trim().replaceAll('\t', '    ');
+				}
+			}
+			const preblock = that.querySelector("pre");
+			const codeblock = that.querySelector("code");
+			// コードのクラス (highlight.js 用)
+			const code = this.getAttribute("code");
+			if (code) {
+				codeblock.classList.add(code);
+			}
+			hljs.highlightBlock(preblock);
+		}
+	}
+);
+</script>
+</block>
+
+<block id="block-icon-logo">
+<!-- ----------------------------------------------------------------------------------------------------
+  ■ ロゴ
+	<icon-logo scale="2.0"></icon-logo>
+ ---------------------------------------------------------------------------------------------------- -->
+<template id="icon-logo">
+<svg width="200px" height="140px" viewBox="0 0 55 40"
+ xmlns="http://www.w3.org/2000/svg">
+
+<!--
+本画像は、IPAexフォント Ver.003.01 で作成されています
+http://ipafont.ipa.go.jp/node26#ja
+-->
+
+<defs >
+<font horiz-adv-x="956" ><font-face
+    font-family="IPAexGothic"
+    units-per-em="2048"
+    panose-1="2 11 5 0 0 0 0 0 0 0"
+    ascent="1802"
+    descent="-246"
+    alphabetic="0" />
+<missing-glyph horiz-adv-x="2048" d="M1843 -205H205V1761H1843V-205ZM1669 1655H381L1026 862L1669 1655ZM1737 -17V1569L1094 776L1737 -17ZM956 776L311 1573V-19L956 776ZM1667 -99L1026 692L383 -99H1667Z" />
+<glyph unicode="&#xff32;" glyph-name="aj807" horiz-adv-x="2048" d="M487 1538H1064Q1254 1538 1373 1476Q1572 1376 1572 1159Q1572 835 1187 782L1646 104H1402L995 768H671V104H487V1538ZM671 1374V932H1083Q1390 932 1390 1161Q1390 1374 1083 1374H671Z" />
+<glyph unicode="&#xff2f;" glyph-name="aj804" horiz-adv-x="2048" d="M1028 1579Q1306 1579 1497 1364Q1689 1147 1689 821Q1689 567 1566 370Q1373 63 1021 63Q734 63 542 288Q358 503 358 821Q358 1127 530 1339Q724 1579 1028 1579ZM1021 1421Q818 1421 686
+1255Q551 1086 551 821Q551 621 631 471Q766 221 1026 221Q1245 221 1379 414Q1496 579 1496 821Q1496 1043 1398 1200Q1263 1421 1021 1421Z" />
+<glyph unicode="&#xff38;" glyph-name="aj813" horiz-adv-x="2048" d="M409 1538H647L1024 993L1400 1538H1638L1128 858L1730 104H1474L1024 717L573 104H317L919 858L409 1538Z" />
+</font>
+
+<font horiz-adv-x="974" ><font-face
+    font-family="IPAexMincho"
+    units-per-em="2048"
+    panose-1="2 2 4 0 0 0 0 0 0 0"
+    ascent="1802"
+    descent="-246"
+    alphabetic="0" />
+<missing-glyph horiz-adv-x="2048" d="M1843 -205H205V1761H1843V-205ZM1669 1655H381L1026 862L1669 1655ZM1737 -17V1569L1094 776L1737 -17ZM956 776L311 1573V-19L956 776ZM1667 -99L1026 692L383 -99H1667Z" />
+<glyph unicode="e" glyph-name="aj70" horiz-adv-x="1143" d="M1032 543H260V508Q260 306 383 180Q486 78 633 78Q853 78 973 291L1028 248Q897 -12 609 -12Q395 -12 256 127Q117 270 117 510Q117 765 264 912Q392 1043 590 1043Q782 1043 901 920Q1032 789 1032
+580V543ZM893 621Q887 797 791 894Q708 974 588 974Q445 974 350 849Q282 760 267 621H893Z" />
+<glyph unicode="r" glyph-name="aj83" horiz-adv-x="829" d="M385 780Q431 891 528 973Q614 1041 710 1041Q827 1041 827 936Q827 842 741 842Q655 842 655 926Q655 931 659 955Q579 948 495 852Q429 774 395 662V207Q395 114 440 96Q486 77 579 77V20H78V77Q151
+77 190 90Q258 108 258 207V819Q258 916 209 934Q175 946 80 946V1008Q255 1011 385 1041V780Z" />
+<glyph unicode="v" glyph-name="aj87" horiz-adv-x="1092" d="M1106 951Q980 948 934 834L586 -27H514L174 811Q138 900 96 928Q66 947 -2 951V1008H432V951Q299 948 299 875Q299 854 313 819L571 139L838 817Q854 860 854 879Q854 948 707 951V1008H1106V951Z" />
+</font>
+</defs>
+
+	<rect x="8" y="8" width="40" height="25" rx="5" ry="5"
+		stroke-width="2" stroke="sandybrown" fill="bisque"
+	/>
+
+	<g font-size="30" stroke-width="1" stroke="white" font-family="IPAexGothic">
+		<text x="18" y="25" fill="blue">Ｒ</text>
+		<text x="8" y="30" fill="forestgreen">Ｏ</text>
+		<text x="0" y="25" fill="blue">Ｘ</text>
+	</g>
+
+	<g font-size="24" stroke-width="0.3" stroke="white" font-family="IPAexMincho" fill="limegreen">
+		<text x="23" y="36">v</text>
+		<text x="32" y="36">e</text>
+		<text x="42" y="36">r</text>
+	</g>
+
+</svg>
+</template>
+<script>
+CompElem.Define("icon-logo"
+	, class IconDown extends CompElem {
+		// 監視属性リスト
+		static _attributes = ["scale"];
+		// コンテンツ更新ハンドル
+		_updateContents() {
+			const that = this.shadowRoot;
+			// スケール
+			const scale = parseFloat(this.getAttribute("scale"));
+			if (scale) {
+				const svg = that.querySelector("svg");
+				svg.setAttribute("width", scale*200);
+				svg.setAttribute("height", scale*140);
+			}
+		}
+	}
+);
+</script>
+</block>
+
+
+<!-- ----------------------------------------------------------------------------------------------------
+  ■ 展開
+	<expand-div title="タイトル">展開要素</expand-div>
+ ---------------------------------------------------------------------------------------------------- -->
+<template id="expand-div">
+	<style>
+		.title:hover {
+			cursor: pointer;
+		}
+		.wrapper {
+			position: relative;
+			display: none;
+		}
+	</style>
+	<span class="title"></span>
+	<span class="wrapper">
+	</span>
+</template>
+<script>
+CompElem.Define("expand-div"
+	, class extends CompElem {
+		// 監視属性リスト
+		static _attributes = ["title"];
+		// コンテンツ更新ハンドル
+		_updateContents() {
+			const that = this.shadowRoot;
+			// タイトル
+			const title = this.getAttribute("title");
+			if (title) {
+				that.querySelector(".title").textContent = title;
+			}
+			// 表示文字列
+			that.querySelector(".wrapper").innerHTML = this.innerHTML;
+		}
+		constructor() {
+			super();
+			const that = this.shadowRoot;
+			const title = that.querySelector(".title");
+			const wrapper = that.querySelector(".wrapper");
+			wrapper.opened = false;
+			title.addEventListener("click", () => {
+				wrapper.opened = !wrapper.opened;
+				if (wrapper.opened) {
+					wrapper.style.display ="block";
+				} else {
+					wrapper.style.display ="none";
+				}
+			});
+		}
+	}
+);
+</script>
+
+
+</html>
