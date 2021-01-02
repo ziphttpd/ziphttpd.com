@@ -1,6 +1,7 @@
 package main
 
 import (
+	"fmt"
 	"net/http"
 	"sync"
 
@@ -46,6 +47,13 @@ func main() {
 
 // メインページ
 func topPage(c echo.Context) error {
+	// パニックをキャッチ
+	defer func() {
+		r := recover()
+		if r != nil {
+			util.LogOutput(fmt.Sprintf("Run() return %+v", r))
+		}
+	}()
 	conf, err := getConfig(c.Request())
 	if err != nil {
 		conf = &Config{}
