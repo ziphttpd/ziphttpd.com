@@ -74,6 +74,7 @@ func topPage(c echo.Context) error {
 		// ファイルバージョン
 		Version: conf.Version,
 	}
+	util.LogOutput(fmt.Sprintf("%+v", param))
 	return templateRender(http.StatusOK, "index", param, c)
 }
 
