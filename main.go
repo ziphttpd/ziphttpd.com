@@ -58,11 +58,13 @@ func topPage(c echo.Context) error {
 	if err != nil {
 		conf = &Config{}
 	}
+	util.LogOutput(fmt.Sprintf("%+v", conf))
 	type TopParam struct {
 		Acc     string
 		Ad      AdParam
 		URL     string
 		Version string
+		Date    string
 	}
 	param := TopParam{
 		// total access
@@ -73,8 +75,9 @@ func topPage(c echo.Context) error {
 		URL: conf.URL,
 		// ファイルバージョン
 		Version: conf.Version,
+		// 日付
+		Date: conf.Date,
 	}
-	util.LogOutput(fmt.Sprintf("%+v", param))
 	return templateRender(http.StatusOK, "index", param, c)
 }
 

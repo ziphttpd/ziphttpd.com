@@ -9,6 +9,7 @@ import (
 type Config struct {
 	URL     string `json:"url"`
 	Version string `json:"version"`
+	Date    string `json:"date"`
 }
 
 var conf *Config

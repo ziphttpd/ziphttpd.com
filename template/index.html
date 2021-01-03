@@ -11,7 +11,7 @@
 	<meta property="og:url" content="https://ziphttpd.com" />
 	<meta property="og:site_name" content="ZipHttpd.com" />
 	<meta property="og:description" content="ZipHttpd.com Official" />
-	<title>StringNote</title>
+	<title>ZipHttpd</title>
 	<link rel="icon" href="./static/favicon.ico">
 	<link type="text/css" rel="stylesheet" href="./static/sign.css" />
 
@@ -59,9 +59,9 @@
 	function transInit() {
 		return {
 			ja: {
-				"title": "ZipHttpd へようこそ"
-				, "description": "ZipHttpd ドキュメントサイトを公開できるサービスです。"
-				, "download": "クライアントダウンロード"
+				"title": "ZipHttpd クライアントダウンロード"
+				, "description": "ZipHttpd は HTML ドキュメントをローカルで参照するためのアプリです。"
+				, "download": "ダウンロード"
 				, "link-ad": "表示される広告の一覧"
 				, "text-official-announcement": "公式アナウンス"
 				, "text-total": "アクセス数:"
@@ -204,13 +204,13 @@ CompElem.Define("popup-span"
  ---------------------------------------------------------------------------------------------------- -->
 <body>
 	<div id="header">
-		<h1 id="title">Welcome to ZipHttpd.</h1>
+		<h1 id="title">ZipHttpd Client Download.</h1>
 	</div>
 	<div id="description" class="description">
-		ZipHttpd A service that allows you to publish a document download site.
+		ZipHttpd is an application for local browsing of HTML documents.
 	</div>
 
-	<a href="{{.URL}}" class="btn btn--orange"><span id="client download">download</span><br>{{.Version}}</a>
+	<a href="{{.URL}}" class="btn btn--orange"><span id="download">download</span><br>{{.Version}}<br>{{.Date}}</a>
 
 	<div class="ad">
 		{{range .Ad.Ad728}}
