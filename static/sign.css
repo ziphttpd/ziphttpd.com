@@ -208,4 +208,7 @@ button.btn {
   letter-spacing: 0.1em;
   color: #212529;
   border-radius: 0.5rem;
+
+  margin: 5px 0px 5px 5px;
+  width: 700px;
 }
