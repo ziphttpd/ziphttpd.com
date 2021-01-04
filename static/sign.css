@@ -194,7 +194,7 @@ button.btn {
   line-height: 1.5;
   position: relative;
   display: inline-block;
-  padding: 1rem 4rem;
+  padding: 1rem 1rem;
   cursor: pointer;
   -webkit-user-select: none;
   -moz-user-select: none;
@@ -207,8 +207,8 @@ button.btn {
   text-decoration: none;
   letter-spacing: 0.1em;
   color: #212529;
-  border-radius: 0.5rem;
+  border-radius: 1rem;
 
-  margin: 5px 0px 5px 5px;
-  width: 700px;
+  margin: 5px 0px 5px 65px;
+  width: 600px;
 }
