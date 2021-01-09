@@ -10,7 +10,7 @@ handlers:
     static_dir: static
     secure: always
   - url: /sig
-    static_dir: static
+    static_dir: sig
     secure: always
   - url: /.*
     script: auto
