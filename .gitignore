@@ -1,5 +1,6 @@
 *.zip
-*.json
+admin.json
+launch.json
 *.zipping
 *.log
 /zip/*

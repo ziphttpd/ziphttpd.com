@@ -62,6 +62,7 @@
 				"title": "ZipHttpd"
 				, "description": "ZipHttpd は HTML ドキュメントをローカルで参照するためのアプリです。"
 				, "download": "ダウンロード"
+				, "readme": "アプリケーション説明"
 				, "link-ad": "表示される広告の一覧"
 				, "text-official-announcement": "公式アナウンス"
 				, "text-total": "アクセス数:"
@@ -204,7 +205,7 @@ CompElem.Define("popup-span"
  ---------------------------------------------------------------------------------------------------- -->
 <body>
 	<div id="header">
-		<h1 id="title">ZipHttpd</h1>
+		<img src="./static/ZipHttpd.svg"> <span class="title" id="title">ZipHttpd</span>
 	</div>
 	<div id="description" class="description">
 		ZipHttpd is an application for local browsing of HTML documents.
@@ -212,6 +213,10 @@ CompElem.Define("popup-span"
 
 	<a href="{{.URL}}" class="btn btn--orange"><span id="download">download</span><br>{{.Version}}<br>{{.Date}}</a>
 
+	<div id="info">
+		<a href="https://xorver.s3-ap-northeast-1.amazonaws.com/ZipHttpd/readme.html" id="readme">README</a>
+	</div>
+	
 	<div class="ad">
 		{{range .Ad.Ad728}}
 		<iframe src="{{.URL}}" loading="lazy" width="728" height="90" scrolling="no" border="0" marginwidth="0" style="border:none;"
