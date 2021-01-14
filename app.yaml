@@ -12,5 +12,7 @@ handlers:
   - url: /sig
     static_dir: sig
     secure: always
+    http_headers:
+      Access-Control-Allow-Origin: '*'
   - url: /.*
     script: auto
