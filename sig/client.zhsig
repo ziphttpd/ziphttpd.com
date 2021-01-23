@@ -1,6 +1,8 @@
 {
-    "host": "ziphttpd.com",
+    "sig.20210111.164841": "kZDBL7LUrZIhi1IUmiJjnB1kbdmxLSA9ajAHXIf1BAhVqaypaepx6eGotsY0IRNn5bV+RDDZSF4MeoGJWRrbFj2dVGpvCC+qUk5b36+YusYjeFDLRFO3lEdHM4A3kJvm6UDuTqlWexGqH5zxI55A1UPLxhVuAKcyfJOwOaeLg5Njs3EEkXa+Q7xg+xPxw2rkgWxs3SxWyoGUnOIpTgM8/II603Nj9JwJNSsfP8tjvv4FBtL9qhLx792ktJL3DnXvIDtcKyrDPepU89kBzzjTbGmX+B6LwUxegBrsGZwIfUzgHohogsQYjoNLOKfYoWWbx+rDs21VSNwI9Lbkt70cqg==",
+    "url.20210111.164841": "https://xorver.s3-ap-northeast-1.amazonaws.com/ZipHttpd/windows/ziphttpd.20210111.164841.zip",
+    "sig": "elPW58FZYI5Phqa7i8YOl1lc/GuI0P+4quYQq785Bv8UoFg2FhWn5uTkdiPFKWgiNxTduqlg51bf+x5vXqD7JieThpVZFT288XKvGZLoXMO0Z4OnM3ao1wEpn9m/NHJHUu5Bc2otUopN6nW1dPcrJzWS4ZQalyeqw+APOjQwiQVKAh/Ppn3k8FzVftUNY3JxT46C1il0wfOB12mEzHPBTYOV6647HeRZM4LxIw0aRvzKi0c3fUG2/Sj7gjlHyteD1mnb+7Tso1byI/TIMamexmcc9ttrLpL1Xtt456wJ05uoZ9fy+m/hVj1iSQ2v2xmwyRNn1SP/X9hwGRIx0cxdrg==",
+    "url": "https://xorver.s3-ap-northeast-1.amazonaws.com/ZipHttpd/windows/ziphttpd.20210123.152952.zip",
     "name": "client",
-    "sig": "kZDBL7LUrZIhi1IUmiJjnB1kbdmxLSA9ajAHXIf1BAhVqaypaepx6eGotsY0IRNn5bV+RDDZSF4MeoGJWRrbFj2dVGpvCC+qUk5b36+YusYjeFDLRFO3lEdHM4A3kJvm6UDuTqlWexGqH5zxI55A1UPLxhVuAKcyfJOwOaeLg5Njs3EEkXa+Q7xg+xPxw2rkgWxs3SxWyoGUnOIpTgM8/II603Nj9JwJNSsfP8tjvv4FBtL9qhLx792ktJL3DnXvIDtcKyrDPepU89kBzzjTbGmX+B6LwUxegBrsGZwIfUzgHohogsQYjoNLOKfYoWWbx+rDs21VSNwI9Lbkt70cqg==",
-    "url": "https://xorver.s3-ap-northeast-1.amazonaws.com/ZipHttpd/windows/ziphttpd.20210111.164841.zip"
+    "host": "ziphttpd.com"
 }
