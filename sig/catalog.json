@@ -14,6 +14,10 @@
         "ziphttpd-V1": {
             "description": "ziphttpd のバージョン１を使用するための資料です。",
             "docs": {
+                "assets": {
+                    "description": "ZipHttpd の公式ドキュメントの外部ファイル",
+                    "title": "動画など"
+                },
                 "ziphttpd": {
                     "description": "ZipHttpd の公式ドキュメント",
                     "title": "ZipHttpd ドキュメント"
